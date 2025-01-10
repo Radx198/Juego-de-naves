@@ -25,7 +25,7 @@ namespace Proyecto_juego_de_naves
 
 
 
-        public abstract void MoverBala();
+        public abstract bool MoverBala();
 
         protected abstract bool DetectarColisiones();
 

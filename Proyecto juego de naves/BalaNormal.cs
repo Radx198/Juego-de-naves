@@ -15,6 +15,7 @@ namespace Proyecto_juego_de_naves
         protected Point interseccionLimite;
         protected Point interseccionInicio;
 
+
         public BalaNormal(Point posicionSpawn, Point interseccionInicio, Point interseccionLimite) : base(posicionSpawn, interseccionInicio, interseccionLimite)
         {
             posicionActual = posicionSpawn;
@@ -23,22 +24,25 @@ namespace Proyecto_juego_de_naves
 
             daño = 15;
             velocidad = 15;
+    
         }
 
 
 
-        public override void MoverBala()
+        public override bool MoverBala()
         {
-            while (DetectarLimitesDelMapa() && DetectarColisiones())
-            {
 
+            if (DetectarLimitesDelMapa() && DetectarColisiones())
+            {
                 EliminarDibujoBala();
                 posicionActual.Y -= 1;
                 DibujarBala();
-                Thread.Sleep(50);
+                Thread.Sleep(25);
+                return true;
             }
-         EliminarDibujoBala();
-
+            EliminarDibujoBala();
+            return false;
+            
         }
 
         protected override bool DetectarColisiones()

@@ -114,21 +114,21 @@ namespace Proyecto_juego_de_naves
         public void EjecutarBoton(Button boton)
         {
             Console.Clear();
-            switch(boton.Interfaz)
+            switch (boton.Interfaz)
             {
                 case UIType.Lobby:
                     inicio();
                     break;
                 case UIType.InitGame:
                     marco();
-                    Player jugador = new Player(100,1,"Luca",new Point(interseccionLimite.X/2,interseccionLimite.Y/2),new Point(interseccionLimite.X-interseccionInicio.X, interseccionLimite.Y - interseccionInicio.Y), new Point(interseccionInicio.X,interseccionInicio.Y) ,100);
-                    
+                    Player jugador = new Player(100, 1, "Luca", new Point(interseccionLimite.X / 2, interseccionLimite.Y / 2), new Point(interseccionLimite.X - interseccionInicio.X, interseccionLimite.Y - interseccionInicio.Y), new Point(interseccionInicio.X, interseccionInicio.Y), 100);
+                    Thread t = new Thread(jugador.Mover);
+                    t.Start();
+                    Thread t2 = new Thread(jugador.EjecutarBalas);
+                    t2.Start();
                     while (true)
                      {
-                      
-                        jugador.Mover();
 
-                        Thread.Sleep(50);
 
                     }
                     break;

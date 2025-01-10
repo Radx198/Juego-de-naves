@@ -18,7 +18,12 @@ namespace Proyecto_juego_de_naves
         private Point interseccionLimite;
         private Point interseccionInicio;
 
+        private object lockBalas = new object();
+
         private List<BalaNormal> balasNormales;
+
+
+
         public Point PosicionActual
         {
             get { return posicionActual; }
@@ -27,6 +32,7 @@ namespace Proyecto_juego_de_naves
 
         public Player(int vida, int velocidad, string nombre, Point posicionSpawn, Point interseccionLimite, Point interseccionInicio, int sobrecarga)
         {
+
             this.vida = vida;
             this.velocidad = velocidad;
             this.nombre = nombre;
@@ -38,6 +44,8 @@ namespace Proyecto_juego_de_naves
 
             balasNormales = new List<BalaNormal>();
             this.sobrecarga = sobrecarga;
+
+
             CrearNave();
         }
         public void CrearNave()
@@ -53,45 +61,61 @@ namespace Proyecto_juego_de_naves
         }
         public void Mover()
         {
-            ConsoleKeyInfo key = Console.ReadKey(true);
-
-
-
-            
-
-            switch (key.Key)
+            while (true)
             {
-                case ConsoleKey.W:
-                    EjecutarMovimiento(Direccion.arriba);
+                ConsoleKeyInfo key = Console.ReadKey(true);
 
-                    break;
-                case ConsoleKey.S:
-                    EjecutarMovimiento(Direccion.abajo);
+                switch (key.Key)
+                {
+                    case ConsoleKey.W:
+                        EjecutarMovimiento(Direccion.arriba);
 
-                    break;
-                case ConsoleKey.A:
-                    EjecutarMovimiento(Direccion.izquierda);
-                    
-                    break;
-                case ConsoleKey.D:
-                    EjecutarMovimiento(Direccion.derecha);
-                    
-                    break;
-                case ConsoleKey.E:
-                    BalaNormal balaN = new BalaNormal(new Point(posicionActual.X, posicionActual.Y - 2), interseccionInicio, interseccionLimite);
-                    balasNormales.Add(balaN);
-                    EjecutarBala();
-                    break;
+                        break;
+                    case ConsoleKey.S:
+                        EjecutarMovimiento(Direccion.abajo);
 
+                        break;
+                    case ConsoleKey.A:
+                        EjecutarMovimiento(Direccion.izquierda);
+
+                        break;
+                    case ConsoleKey.D:
+                        EjecutarMovimiento(Direccion.derecha);
+
+                        break;
+                    case ConsoleKey.E:
+                        lock (lockBalas)
+                        {
+                            BalaNormal balaN = new BalaNormal(new Point(posicionActual.X, posicionActual.Y + 2), interseccionInicio, interseccionLimite);
+                            balasNormales.Add(balaN);
+                        }
+                        break;
+
+                }
             }
-
             
 
         }
-        public void EjecutarBala()
+        public void EjecutarBalas()
         {
-            Thread t = new Thread(balasNormales[balasNormales.Count - 1].MoverBala);
-            t.Start();
+            while (true)
+            {
+                List<BalaNormal> eliminar = new List<BalaNormal>(); 
+                lock (lockBalas)
+                { 
+
+                    for (int i = 0; i < balasNormales.Count; i++)
+                    {
+                        if (!balasNormales[i].MoverBala())
+                        {
+                            eliminar.Add(balasNormales[i]);
+                        }
+                    }
+                    for (int i = 0; i < eliminar.Count; i++)
+                        balasNormales.Remove(eliminar[i]);
+                }
+                Thread.Sleep(50);
+            }
         }
 
     }
