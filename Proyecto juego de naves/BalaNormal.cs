@@ -15,7 +15,6 @@ namespace Proyecto_juego_de_naves
         protected Point interseccionLimite;
         protected Point interseccionInicio;
 
-
         public BalaNormal(Point posicionSpawn, Point interseccionInicio, Point interseccionLimite) : base(posicionSpawn, interseccionInicio, interseccionLimite)
         {
             posicionActual = posicionSpawn;
@@ -29,7 +28,8 @@ namespace Proyecto_juego_de_naves
 
 
 
-        public override bool MoverBala()
+        public override bool MoverBala() //Mueve la bala hacia arriba
+            //si se encuentra de los limites o choco con algo desaparece
         {
 
             if (DetectarLimitesDelMapa() && DetectarColisiones())
@@ -46,12 +46,12 @@ namespace Proyecto_juego_de_naves
         }
 
         protected override bool DetectarColisiones()
-        {
+        {//Si toca un enemigo
             return true;
         }
 
         protected override bool DetectarLimitesDelMapa()
-        {
+        {//si su futura posicion está fuera de los limites retorna false
             if (posicionActual.Y - 1 >= interseccionInicio.Y)
                 return true;
             return false;

@@ -8,7 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 namespace Proyecto_juego_de_naves
 {
     enum ModosDeInterfaz {Jugar, inicio, salir};
-    internal class UIGame
+    internal class UIGame //Cambiará de interfaces graficas, junto a su lógica
     {
 
 
@@ -16,11 +16,16 @@ namespace Proyecto_juego_de_naves
         private Point interseccionLimite;
 
 
+
+        private Player jugador;
         private ConsoleColor colorDeFondo;
         private ConsoleColor colorDeFuente;
         private bool juegoCompletado;
-        
-        public UIGame( Point interseccionInicio, Point interseccionLimite, ConsoleColor colorDeFondo, ConsoleColor colorDeFuente)
+
+
+
+
+        public UIGame( Point interseccionInicio, Point interseccionLimite, ConsoleColor colorDeFondo, ConsoleColor colorDeFuente, Player jugador)
         {
             this.interseccionInicio= interseccionInicio; 
             this.interseccionLimite = interseccionLimite;
@@ -30,6 +35,7 @@ namespace Proyecto_juego_de_naves
             this.colorDeFuente = colorDeFuente;
             juegoCompletado = false;
 
+            this.jugador = jugador;
 
 
             Console.BackgroundColor = colorDeFondo;
@@ -40,7 +46,8 @@ namespace Proyecto_juego_de_naves
 
         }
         
-        public void inicio()
+        public void inicio() //Dibuja una interfaz de inicio del programa
+            //incluyendo un cuadro y bótones
         { 
             marco();
             string titulo = "BIENVENIDO";
@@ -58,14 +65,16 @@ namespace Proyecto_juego_de_naves
             buttons.Add(jugar);
             buttons.Add(salir);
 
-            Button botonSeleccionado = seleccionarBoton(buttons);
-            EjecutarBoton(botonSeleccionado);
+            Button botonSeleccionado = seleccionarBoton(buttons); //Almacena el bóton seleccionado por el jugador
+            EjecutarBoton(botonSeleccionado);//ejecuta dicho bóton
 
 
 
 
         }
-        public Button seleccionarBoton(List<Button> button) //Ultimo cambio, Afinar
+        public Button seleccionarBoton(List<Button> button) 
+         //Permite mostrar un item al lado del bóton que si le da a enter se seleccionaria
+                                                            
         {
             Button botonActual = button[0];
 
@@ -111,7 +120,7 @@ namespace Proyecto_juego_de_naves
         }
         
 
-        public void EjecutarBoton(Button boton)
+        public void EjecutarBoton(Button boton)//Ejecuta el bóton pasado como parámetro
         {
             Console.Clear();
             switch (boton.Interfaz)
@@ -120,17 +129,18 @@ namespace Proyecto_juego_de_naves
                     inicio();
                     break;
                 case UIType.InitGame:
-                    marco();
-                    Player jugador = new Player(100, 1, "Luca", new Point(interseccionLimite.X / 2, interseccionLimite.Y / 2), new Point(interseccionLimite.X - interseccionInicio.X, interseccionLimite.Y - interseccionInicio.Y), new Point(interseccionInicio.X, interseccionInicio.Y), 100);
-                    Thread t = new Thread(jugador.Mover);
-                    t.Start();
-                    Thread t2 = new Thread(jugador.EjecutarBalas);
-                    t2.Start();
-                    while (true)
-                     {
+                    InitGame();
+                    
+                    //Player jugador = new Player(100, 1, "Luca", new Point(interseccionLimite.X / 2, interseccionLimite.Y / 2), new Point(interseccionLimite.X - interseccionInicio.X, interseccionLimite.Y - interseccionInicio.Y), new Point(interseccionInicio.X, interseccionInicio.Y), 100);
+                    //Thread t = new Thread(jugador.Mover);
+                    //t.Start();
+                    //Thread t2 = new Thread(jugador.EjecutarBalas);
+                    //t2.Start();
+                    //while (true)
+                    // {
 
 
-                    }
+                    //}
                     break;
                 case UIType.GameOver:
                     break;
@@ -140,9 +150,35 @@ namespace Proyecto_juego_de_naves
         }
 
 
+        public void InitGame()
+        {
+            jugador.CrearNave();
+
+            marco();
+
+            EstadisticasJugador();
 
 
+        }
 
+        private void EstadisticasJugador()
+        {
+
+            Console.SetCursorPosition(interseccionInicio.X, interseccionInicio.Y - 2);
+            Console.Write("Vida: {0}",jugador.Vida);
+
+            Console.SetCursorPosition(interseccionInicio.X + 9 + 2, interseccionInicio.Y - 2);
+            Console.Write("Sobrecarga: {0}", jugador.SobreCargar);
+
+            Console.SetCursorPosition(interseccionInicio.X + 9 + 2 + 15 + 2, interseccionInicio.Y - 2);
+            
+                if (jugador.BalaEspecial)
+                Console.ForegroundColor = ConsoleColor.Green;
+            else Console.ForegroundColor = ConsoleColor.Red;
+
+            Console.Write("ATAQUE ESPECIAL");
+            Console.ForegroundColor = colorDeFuente;
+        }
 
 
 

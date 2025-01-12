@@ -14,22 +14,21 @@ namespace Proyecto_juego_de_naves
         protected Point posicionActual;
         protected Point interseccionLimite;
         protected Point interseccionInicio;
-        protected int time;
         public Bala(Point posicionSpawn, Point interseccionInicio, Point interseccionLimite)
         {
             posicionActual = posicionSpawn;
             this.interseccionInicio = interseccionInicio;
             this.interseccionLimite = interseccionLimite;
-            time = 100;
         }
 
 
 
-        public abstract bool MoverBala();
+        public abstract bool MoverBala(); //Trayectoria de la bala
 
-        protected abstract bool DetectarColisiones();
+        protected abstract bool DetectarColisiones();//detecta enemigos
 
-        protected abstract bool DetectarLimitesDelMapa();
+
+        protected abstract bool DetectarLimitesDelMapa();//deteca los limites del mapa
 
 
         protected abstract void DibujarBala();

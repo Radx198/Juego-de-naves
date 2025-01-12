@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Proyecto_juego_de_naves
 {
-    internal class Button
+    internal class Button 
     {
         private ConsoleColor ColorDeFuente;
         private string texto;
@@ -24,10 +24,6 @@ namespace Proyecto_juego_de_naves
         {
             get { return interfaz; }
         }
-
-
-
-
         public Button(ConsoleColor colorDeFuente, string texto, UIType interfaz, Point cursor, bool activarCursor)
         {
             this.ColorDeFuente = colorDeFuente;

@@ -8,45 +8,56 @@ using System.Drawing;
 namespace Proyecto_juego_de_naves
 {
     enum Direccion { arriba, abajo, izquierda, derecha };
-    internal partial class Player
+    internal partial class Player //La nave en sí, podra moverse y disparar, entre otras cosas
     {
         private int vida;
         private int velocidad;
-        private string nombre;
         private Point posicionActual;
-        private int sobrecarga;
+        private int sobreCarga;
         private Point interseccionLimite;
         private Point interseccionInicio;
+        private bool balaEspecial;
 
-        private object lockBalas = new object();
+        private object lockBalas = new object(); //usado para usar lock(){}
 
-        private List<BalaNormal> balasNormales;
-
-
+        private List<BalaNormal> balasNormales; //lista de balas que estan en pantalla
 
         public Point PosicionActual
         {
             get { return posicionActual; }
         }
+        public int Vida
+        {
+            get { return vida; }
+        }
+        public int SobreCargar
+        {
+            set { sobreCarga = value; }
+            get { return sobreCarga; }
+        }
 
-
-        public Player(int vida, int velocidad, string nombre, Point posicionSpawn, Point interseccionLimite, Point interseccionInicio, int sobrecarga)
+        public bool BalaEspecial
+        {
+            get { return balaEspecial; }
+        }
+        public Player(int vida, int velocidad, Point posicionSpawn, Point interseccionLimite, Point interseccionInicio, int sobreCarga)
         {
 
             this.vida = vida;
             this.velocidad = velocidad;
-            this.nombre = nombre;
+
 
             posicionActual = posicionSpawn;
             this.interseccionLimite = interseccionLimite;
             this.interseccionInicio = interseccionInicio;
 
 
+            balaEspecial = false;
             balasNormales = new List<BalaNormal>();
-            this.sobrecarga = sobrecarga;
+            this.sobreCarga = sobreCarga;
 
 
-            CrearNave();
+
         }
         public void CrearNave()
         {
@@ -59,7 +70,8 @@ namespace Proyecto_juego_de_naves
             Console.SetCursorPosition(posicionActual.X, posicionActual.Y + 3);
             Console.Write("|-|----|-|");
         }
-        public void Mover()
+        public void Mover()//Método en el que espera una entrada por teclado
+            //y si es la esperada la ejecuta.
         {
             while (true)
             {
@@ -88,6 +100,7 @@ namespace Proyecto_juego_de_naves
                         {
                             BalaNormal balaN = new BalaNormal(new Point(posicionActual.X, posicionActual.Y + 2), interseccionInicio, interseccionLimite);
                             balasNormales.Add(balaN);
+                            
                         }
                         break;
 
@@ -96,11 +109,13 @@ namespace Proyecto_juego_de_naves
             
 
         }
-        public void EjecutarBalas()
+        public void EjecutarBalas()//Si hay balas en la lista 
+            //con un for las mueve una a una hasta que no 
         {
+            List<BalaNormal> eliminar = new List<BalaNormal>();
             while (true)
             {
-                List<BalaNormal> eliminar = new List<BalaNormal>(); 
+                
                 lock (lockBalas)
                 { 
 
@@ -115,6 +130,7 @@ namespace Proyecto_juego_de_naves
                         balasNormales.Remove(eliminar[i]);
                 }
                 Thread.Sleep(50);
+                eliminar.Clear();
             }
         }
 
@@ -136,8 +152,9 @@ namespace Proyecto_juego_de_naves
         }
 
 
-        private void EjecutarMovimiento(Direccion dir)
-        {
+        private void EjecutarMovimiento(Direccion dir) //Ejecuta el movimiento de la nave
+            //si esta dentro de los limites de movimiento.
+        { 
             EliminarNave();
 
             switch (dir)
@@ -167,7 +184,7 @@ namespace Proyecto_juego_de_naves
             CrearNave();
         }
         private bool VerificarLimitesDeMovimiento(Direccion dir)
-        {
+        { 
             switch (dir)
             {
                 case Direccion.arriba:
@@ -193,8 +210,6 @@ namespace Proyecto_juego_de_naves
                         return true;
 
                     break;
-
-                default: return false;
             }
             return false;
         }

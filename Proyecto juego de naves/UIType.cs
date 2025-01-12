@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Proyecto_juego_de_naves
 {
-    public enum UIType
+    public enum UIType //Tipos de interfaces graficas.
     {
-        InitGame,
-        Lobby,
-        Exit,
-        GameOver
+        InitGame, //De gameplay.
+        Lobby, //De presentación al abrir el juego.
+        Exit, //Cierra el juego.
+        GameOver //Cuando muere el jugador
     }
 }
